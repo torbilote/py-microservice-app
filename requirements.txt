@@ -1,0 +1,8 @@
+loguru==0.7.2
+
+# development only
+ruff==0.2.1
+pytest==8.0.0
+pyright==1.1.350
+snoop==0.4.3
+diagrams==0.23.4
