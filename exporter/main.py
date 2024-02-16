@@ -7,20 +7,16 @@ import jsonlines
 from faker import Faker
 from loguru import logger
 
-import exporter.config as cfg
-
+import exporter.config as exporter_config
+# import aws.s3.utils as s3_utils
 # import snoop
 
 
 def _get_schema() -> dict:
     logger.info("Started to load schema.")
 
-    try:
-        with open("exporter/schema.json", mode="r", encoding="utf-8") as json_file:
-            dict_file = json.load(json_file)
-    except OSError as err:
-        logger.error(f"Failed to load schema. Error: {err}.")
-        raise
+    with open("exporter/schema.json", mode="r", encoding="utf-8") as json_file:
+        dict_file = json.load(json_file)
 
     logger.info("Succeeded to load schema.")
     return dict_file
@@ -29,58 +25,61 @@ def _get_schema() -> dict:
 def _is_record_and_schema_aligned(record: dict, schema: dict) -> bool:
     record_keys = [key for key in record.keys()]
     schema_keys = [key for key in schema.keys()]
-
     return record_keys == schema_keys
 
 
-def _generate_record(index: int, schema: dict) -> dict:
-    logger.info("Started to generate record.")
+def _generate_records(schema: dict, no_of_records: int) -> list[dict]:
+    logger.info("Started to generate records.")
 
-    faker = Faker(locale=["en_GB"])
-    faker.seed_instance(index)
-    record = dict()
+    records = []
 
-    record["name"] = {"first": faker.first_name(), "last": faker.last_name()}
-    record["address"] = {"city": faker.city()}
-    record["sale"] = {
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "amount": random.choice(range(0, cfg.MAXIMUM_OF_SALE_AMOUNT, 100)),
-    }
+    for number in range(no_of_records):
+        faker = Faker(locale=["en_GB"])
+        faker.seed_instance(number)
+        record = dict()
 
-    if not _is_record_and_schema_aligned(record, schema):
-        raise AttributeError("Schema is not aligned with record fields.")
+        record["name"] = {
+            "first": faker.first_name(),
+            "last": faker.last_name(),
+        }
+        record["address"] = {
+            "city": faker.city(),
+        }
+        record["sale"] = {
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "amount": random.choice(range(0, exporter_config.MAXIMUM_OF_SALE_AMOUNT, 100)),
+        }
+        records.append(record)
 
-    logger.info("Succeeded to generate record.")
-    return record
+        if not _is_record_and_schema_aligned(record, schema):
+            raise AttributeError("Schema is not aligned with record fields.")
+
+    logger.info("Succeeded to generate records.")
+    return records
 
 
-def _export_records(records: list) -> None:
-    logger.info("Started to export records.")
+def _parse_records_to_file(records: list[dict]) -> None:
+    logger.info("Started to parse records to jsonl file.")
 
-    file = _convert_records_to_jsonlines_file(records)
-
-    logger.info("Succeeded to export records.")
-
-
-def _convert_records_to_jsonlines_file(records: list) -> io.BytesIO:
+    # TODO
     file = io.BytesIO()
     with jsonlines.Writer(file) as writer:
         writer.write_all(records)
-
-    # for testing only
-    # with open("exporter/export.jsonl", mode='wb') as f:
-    #     f.write(file.getbuffer())
-
+    with open("exporter/export.jsonl", mode='wb') as f:
+        f.write(file.getbuffer())
     file.close()
-    return file
 
+    logger.info("Succeeded to parse records to jsonl file.")
+
+def _export_file(files) -> None:
+    # TODO
+    ...
 
 def main() -> None:
     schema = _get_schema()
-    list_of_records = [
-        _generate_record(record, schema) for record in range(cfg.NUMBER_OF_RECORDS)
-    ]
-    _export_records(list_of_records)
+    records = _generate_records(schema, exporter_config.NUMBER_OF_RECORDS)
+    files = _parse_records_to_file(records)
+    # _export_file(file)
 
 
 if __name__ == "__main__":
