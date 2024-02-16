@@ -1,10 +1,9 @@
-from diagrams import Diagram, Cluster
-from diagrams.aws.storage import S3, ElasticFileSystemEFSFileSystem
-from diagrams.aws.integration import SQS
+from diagrams import Cluster, Diagram
 from diagrams.aws.compute import Lambda
 from diagrams.aws.database import DDB, RDSPostgresqlInstance
+from diagrams.aws.integration import SQS
+from diagrams.aws.storage import S3, ElasticFileSystemEFSFileSystem
 from diagrams.onprem.analytics import Metabase
-
 
 with Diagram(name="Architecture", filename="architecture", show=False):
     with Cluster("Terraform") as _:
@@ -22,6 +21,5 @@ with Diagram(name="Architecture", filename="architecture", show=False):
         with Cluster("On Premise") as _:
             postgresql = RDSPostgresqlInstance("PostgreSQL")
             metabase = Metabase("Metabase")
-
 
     data_source >> s3 >> sqs >> lambda_function >> postgresql >> metabase

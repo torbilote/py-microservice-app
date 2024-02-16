@@ -1,8 +1,10 @@
+diagrams==0.23.4
 loguru==0.7.2
+faker==23.2.0
+jsonlines==4.0.0
 
 # development only
 ruff==0.2.1
 pytest==8.0.0
 pyright==1.1.350
 snoop==0.4.3
-diagrams==0.23.4

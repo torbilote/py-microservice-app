@@ -1,0 +1,13 @@
+{
+    "name": {
+        "first": "string",
+        "last": "string"
+    },
+    "address": {
+        "country": "string"
+        },
+    "sale": {
+        "date": "datetime",
+        "value": "integer"
+    }
+}
