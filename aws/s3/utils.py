@@ -1,14 +1,24 @@
 import boto3
-import io
+from botocore.client import ClientError
+from exporter.config import S3_BUCKET_NAME, AWS_REGION_NAME, AWS_ENDPOINT_URL
+from loguru import logger
 
-endpoint_url = "http://localhost.localstack.cloud:4566"
-s3_client = boto3.client(service_name="s3", endpoint_url=endpoint_url, region_name='eu-west-1')
-s3_resource = boto3.resource(service_name="s3", endpoint_url=endpoint_url, region_name='eu-west-1')
+s3_client = boto3.client(service_name="s3", endpoint_url=AWS_ENDPOINT_URL, region_name=AWS_REGION_NAME)
+s3_resource = boto3.resource(service_name="s3", endpoint_url=AWS_ENDPOINT_URL, region_name=AWS_REGION_NAME)
 
-def upload_file(file, key: str, bucket_name: str) -> None:
-        s3_client.put_object(Bucket=bucket_name, Key=key, Body=file)
+def create_storage_if_not_exists() -> None:
+    logger.info("Started to check storage.")
 
-def create_bucket(bucket_name: str):
-    s3_client.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
+    try:
+        s3_client.head_bucket(Bucket=S3_BUCKET_NAME)
+    except ClientError:
+        s3_client.create_bucket(Bucket=S3_BUCKET_NAME, CreateBucketConfiguration={'LocationConstraint': AWS_REGION_NAME})
 
-create_bucket('torbilote')
+    logger.info("Succeeded to check storage.")
+
+def upload_file_to_storage(file_name: str) -> None:
+    logger.info("Started to upload file to storage.")
+
+    s3_client.upload_file(Bucket=S3_BUCKET_NAME, Key=file_name, Filename='exporter/export.jsonl')
+
+    logger.info("Succeeded to upload file to storage.")
