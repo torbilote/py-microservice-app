@@ -1,36 +1,36 @@
 import os
 import random
-from datetime import datetime
+from datetime import datetime, UTC
 
 import jsonlines
 from faker import Faker
 from loguru import logger
 
 from app.config import FILE_PATH
-
+from app.schema import Record, Name, Address, Sale
 
 def generate_records(no_of_records: int) -> list[dict]:
     logger.info("Started.")
 
     records = []
-
     for number in range(no_of_records):
         faker = Faker(locale=["en_GB"])
         faker.seed_instance(number)
-        record = dict()
 
-        record["name"] = {
-            "first": faker.first_name(),
-            "last": faker.last_name(),
-        }
-        record["address"] = {
-            "city": faker.city(),
-        }
-        record["sale"] = {
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "amount": random.choice(range(0, 5000, 100)),
-        }
-        records.append(record)
+        record = Record(
+            name=Name(
+                first=faker.first_name(),
+                last=faker.last_name()
+            ),
+            address=Address(
+                city=faker.city(),
+            ),
+            sale=Sale(
+                date=datetime.now(tz=UTC),
+                value=random.choice(range(0, 5000, 100)),
+            ))
+
+        records.append(record.model_dump())
 
     logger.info("Finished.")
     return records
