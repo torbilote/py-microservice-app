@@ -12,7 +12,8 @@ s3_client = boto3.client(
     aws_secret_access_key="test",
 )
 s3_resource = boto3.resource(
-    service_name="s3", endpoint_url=AWS_ENDPOINT_URL, region_name=AWS_REGION_NAME
+    service_name="s3", endpoint_url=AWS_ENDPOINT_URL, region_name=AWS_REGION_NAME,aws_access_key_id="test",
+    aws_secret_access_key="test",
 )
 
 
