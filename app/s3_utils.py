@@ -2,18 +2,21 @@ import boto3
 from botocore.client import ClientError
 from loguru import logger
 
-from app.config import AWS_ENDPOINT_URL, AWS_REGION_NAME, FILE_PATH, S3_BUCKET_NAME
+from app.config import AWS_ENDPOINT_URL, AWS_REGION_NAME, FILE_PATH, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 s3_client = boto3.client(
     service_name="s3",
     endpoint_url=AWS_ENDPOINT_URL,
     region_name=AWS_REGION_NAME,
-    aws_access_key_id="test",
-    aws_secret_access_key="test",
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
 )
 s3_resource = boto3.resource(
-    service_name="s3", endpoint_url=AWS_ENDPOINT_URL, region_name=AWS_REGION_NAME,aws_access_key_id="test",
-    aws_secret_access_key="test",
+    service_name="s3",
+    endpoint_url=AWS_ENDPOINT_URL,
+    region_name=AWS_REGION_NAME,
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
 )
 
 

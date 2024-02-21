@@ -9,23 +9,23 @@ from loguru import logger
 from app.config import FILE_PATH
 from app.schema import Record, Name, Address, Sale
 
-def generate_records(no_of_records: int) -> list[dict]:
+def generate_records(number_of_records: int) -> list[dict]:
     logger.info("Started.")
 
     records = []
-    for number in range(no_of_records):
-        faker = Faker(locale=["en_GB"])
-        faker.seed_instance(number)
+    for number in range(number_of_records):
+
+        faker = _get_faker(number)
 
         record = Record(
-            name=Name(
+            Name(
                 first=faker.first_name(),
                 last=faker.last_name()
             ),
-            address=Address(
+            Address(
                 city=faker.city(),
             ),
-            sale=Sale(
+            Sale(
                 date=datetime.now(tz=UTC),
                 value=random.choice(range(0, 5000, 100)),
             ))
@@ -51,3 +51,9 @@ def delete_local_file() -> None:
     os.unlink(FILE_PATH)
 
     logger.info("Finished.")
+
+
+def _get_faker(set_seed: int) -> Faker:
+    faker = Faker(locale=["en_GB"])
+    faker.seed_instance(set_seed)
+    return faker

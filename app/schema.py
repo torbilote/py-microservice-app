@@ -21,7 +21,7 @@ class Sale(BaseModel):
     value: int
 
     @field_serializer('date')
-    def serialize_datetime(self, date: datetime, _info):
+    def serialize_datetime(self, date: datetime, _info) -> str:
         return date.strftime("%Y-%m-%d %H:%M:%S")
 
 class Record(BaseModel):
