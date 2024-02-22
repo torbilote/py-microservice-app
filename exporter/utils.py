@@ -6,8 +6,8 @@ import jsonlines
 from faker import Faker
 from loguru import logger
 
-from app.config import FILE_PATH
-from app.schema import Record, Name, Address, Sale
+from exporter.config import FILE_PATH
+from exporter.schema import Record, Name, Address, Sale
 
 def generate_records(number_of_records: int) -> list[dict]:
     logger.info("Started.")
@@ -18,14 +18,14 @@ def generate_records(number_of_records: int) -> list[dict]:
         faker = _get_faker(number)
 
         record = Record(
-            Name(
+            name=Name(
                 first=faker.first_name(),
                 last=faker.last_name()
             ),
-            Address(
+            address=Address(
                 city=faker.city(),
             ),
-            Sale(
+            sale=Sale(
                 date=datetime.now(tz=UTC),
                 value=random.choice(range(0, 5000, 100)),
             ))

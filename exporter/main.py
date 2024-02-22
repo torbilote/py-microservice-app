@@ -1,9 +1,9 @@
 import time
 from datetime import datetime
 
-import app.s3_utils as s3_utils
-import app.utils as utils
-from app.config import NUMBER_OF_FILES, NUMBER_OF_RECORDS, TIME_INTERVAL
+import exporter.s3_utils as s3_utils
+import exporter.utils as utils
+from exporter.config import NUMBER_OF_FILES, NUMBER_OF_RECORDS, TIME_INTERVAL
 
 # import snoop
 

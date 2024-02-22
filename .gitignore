@@ -1,3 +1,7 @@
+.terraform
+.terraform.*
+terraform.tfstate*
+
 .ruff_cache
 .localstack-data
 # Byte-compiled / optimized / DLL files

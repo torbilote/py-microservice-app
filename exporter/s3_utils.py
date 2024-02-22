@@ -2,7 +2,7 @@ import boto3
 from botocore.client import ClientError
 from loguru import logger
 
-from app.config import AWS_ENDPOINT_URL, AWS_REGION_NAME, FILE_PATH, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+from exporter.config import AWS_ENDPOINT_URL, AWS_REGION_NAME, FILE_PATH, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 s3_client = boto3.client(
     service_name="s3",

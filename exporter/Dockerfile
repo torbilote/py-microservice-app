@@ -1,11 +1,11 @@
 FROM python:3.11.2-slim
 
-WORKDIR /usr/src/appication
+WORKDIR /usr/src/app
 
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app app
+COPY . ./exporter
 
-CMD ["python", "-m", "app.main"]
+CMD ["python", "-m", "exporter.main"]
