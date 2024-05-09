@@ -17,7 +17,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
+    steps:n
     - uses: actions/checkout@v4
     
     - name: Set up Python 3.11
@@ -30,7 +30,7 @@ jobs:
         python3 -m pip install --upgrade pip
         python3 -m pip install pytest==8.0.0
         python3 -m pip install ruff==0.2.1
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f exporter/requirements.txt ]; then python3 -m pip install -r exporter/requirements.txt; fi
         
     - name: Lint with ruff
       run: |
