@@ -19,14 +19,12 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    s3             = "http://localhost:4566"
+    s3 = "http://localhost:4566"
   }
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "my-tf-test-bucket"
-
-
+  bucket = "my-tf-test-buckets"
 }
 
 
