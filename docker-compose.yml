@@ -10,10 +10,10 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - "DEBUG=${DEBUG:-0}"
     volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./.localstack-data}:/var/lib/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./.localstack_data}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-  exporter:
-    build: ./exporter
+  app:
+    build: ./app
     depends_on:
       localstack:
         condition: service_healthy

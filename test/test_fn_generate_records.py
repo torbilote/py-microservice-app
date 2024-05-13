@@ -1,5 +1,5 @@
 import pytest
-import exporter.utils as utils
+from app import utils
 
 
 @pytest.mark.parametrize("number", [1, 15, 100])
