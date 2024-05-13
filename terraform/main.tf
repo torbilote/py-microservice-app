@@ -20,11 +20,47 @@ provider "aws" {
 
   endpoints {
     s3 = "http://localhost:4566"
+    sqs = "http://localhost:4566"
   }
 }
 
-resource "aws_s3_bucket" "example" {
-  bucket = "staging"
+data "aws_iam_policy_document" "queue" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions   = ["sqs:SendMessage"]
+    resources = ["arn:aws:sqs:*:*:s3-event-notification-queue"]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.bucket.arn]
+    }
+  }
 }
 
+resource "aws_sqs_queue" "queue" {
+  name   = "sqs-staging"
+  policy = data.aws_iam_policy_document.queue.json
+  visibility_timeout_seconds = 43200
+}
 
+resource "aws_s3_bucket" "bucket" {
+  bucket = "s3-staging"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.bucket.id
+
+  queue {
+    queue_arn     = aws_sqs_queue.queue.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".log"
+  }
+}
