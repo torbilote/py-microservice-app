@@ -1,13 +1,15 @@
-import random
-from time import time
-from datetime import UTC, datetime
 import functools
+import random
+import uuid
+from datetime import UTC, datetime
+from time import time
+
+import awswrangler as wr
+import boto3
+import pandas as pd
 from faker import Faker
 from loguru import logger
-import boto3
-import uuid
-import pandas as pd
-import awswrangler as wr
+
 from app import config as cfg
 from app import schema
 
@@ -30,6 +32,7 @@ s3_session = boto3.Session(
     aws_access_key_id=cfg.AWS_ACCESS_KEY_ID,
     aws_secret_access_key=cfg.AWS_SECRET_ACCESS_KEY,
 )
+
 
 def generate_records(number_of_records: int) -> list[dict]:
     logger.info("Started.")
@@ -60,6 +63,7 @@ def generate_records(number_of_records: int) -> list[dict]:
     logger.info("Finished.")
     return records
 
+
 def check_storage() -> None:
     logger.info("Started.")
 
@@ -72,26 +76,28 @@ def upload_data_as_parquet_file(records: list[dict]) -> None:
     logger.info("Started.")
 
     if not records:
-        logger.error('No records to upload.')
+        logger.error("No records to upload.")
         return
 
-    key = f'{cfg.FILE_NAME_PREFIX}_{uuid.uuid4()}'
+    key = f"{cfg.FILE_NAME_PREFIX}_{uuid.uuid4()}"
 
     dataframe = pd.DataFrame(data=records)
 
     wr.s3.to_parquet(
         df=dataframe,
-        path=f's3://{cfg.S3_BUCKET_NAME}/{key}.parquet',
+        path=f"s3://{cfg.S3_BUCKET_NAME}/{key}.parquet",
         boto3_session=s3_session,
-        index=False
+        index=False,
     )
 
     logger.info("Finished.")
+
 
 def _get_faker(seed: int) -> Faker:
     faker = Faker(locale=["en_GB"])
     faker.seed_instance(seed)
     return faker
+
 
 def _time_it(func):
     @functools.wraps(func)
@@ -107,6 +113,3 @@ def _time_it(func):
         return value
 
     return wrapper_time_it
-
-
-
